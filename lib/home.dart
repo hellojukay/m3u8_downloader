@@ -20,19 +20,20 @@ class _HomePageState extends State<HomePage> {
     try {
       await Dio().download(url, "dist.tar.gz",
           options: Options(headers: {
-            "authority": "mirrors.tuna.tsinghua.edu.cn",
             "user-agent":
                 "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
           }), onReceiveProgress: (count, total) {
         setState(() {
-          process = count / (total * 1.0);
+          if (total > 0) {
+            process = (1.0 * count) / (total * 1.0);
+          }
           if (count == total) {
             debugPrint("finished");
             setState(() {
               finished = true;
             });
           }
-          debugPrint("$count");
+          debugPrint("$count $total  $process");
         });
       });
     } catch (e) {
@@ -42,6 +43,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    controller.text =
+        'https://data.cache.m3u8.lscsfw.com:3395/cache/2022-12-15/3338/ac7bb0d04a02bd13e42ce5babcee5deb.m3u8?st=0HCWdGvzJjfxNKZe7MczLg&e=1671106804';
     return Scaffold(
       appBar: AppBar(title: const Text('download')),
       body: Padding(
